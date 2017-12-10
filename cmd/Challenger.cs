@@ -6,14 +6,14 @@ namespace cmd
     public abstract class Challenger
     {
         public int ShipsCount => Map.ShipsCount;
-        protected readonly Map Map;
+        protected internal readonly Map Map;
 
         protected Challenger()
         {
             Map = new Map();
         }
 
-        protected abstract string DoMove();
+        protected abstract string DoAttack(Challenger target);
         protected abstract void DoRender();
         protected abstract void InstallShips();
 
@@ -25,13 +25,12 @@ namespace cmd
             InstallShips();
         }
 
-        public Tuple<int, int> Move()
+        public Tuple<int, int> Attack(Challenger target)
         {
-            var step = DoMove();
-            Logger.Write(GetType().Name + ".Move to: " + step);
+            var step = DoAttack(target);
+            Logger.Write(GetType().Name + ".Attack to: " + step);
 
-            var pair = step.ToUpper().ToCharArray(0, 2);
-            return Tuple.Create(pair[1] - '1', pair[0] - 'A');
+            return ParseStep(step);
         }
 
         public void Render()
@@ -43,6 +42,12 @@ namespace cmd
             Console.WriteLine($"    {title}");
 
             DoRender();
+        }
+
+        protected Tuple<int, int> ParseStep(string step)
+        {
+            var pair = step.ToCharArray(0, 2);
+            return Tuple.Create(pair[1] - '1', pair[0] - 'A');
         }
     }
 }

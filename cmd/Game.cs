@@ -63,8 +63,9 @@ namespace cmd
 
         private void Shoot(Challenger initiator, Challenger target)
         {
-            var step = initiator.Move();
+            var step = initiator.Attack(target);
             target.HandleStep(step.Item1, step.Item2);
+            Logger.Write(target.GetType().Name + $".HandleStep <{step.Item1}, {step.Item2}>");
         }
     }
 }

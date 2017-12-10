@@ -1,10 +1,24 @@
-﻿namespace cmd
+﻿using System.Text.RegularExpressions;
+
+namespace cmd
 {
     public class Player : Challenger
     {
-        protected override string DoMove()
+        private readonly Regex _stepPattern = new Regex(@"^[A-H][1-8]$");
+
+        protected override string DoAttack(Challenger target)
         {
-            return System.Console.ReadLine()?.Trim().ToLower() ?? "A1";
+            System.Console.Write("Enter your step: ");
+            var step = System.Console.ReadLine()?.ToUpper() ?? "-";
+
+            while (!ValidateStep(step, target))
+            {
+                System.Console.WriteLine("Incorrect input!");
+                System.Console.Write("Enter your step: ");
+                step = System.Console.ReadLine()?.ToUpper() ?? "-";
+            }
+
+            return step;
         }
 
         protected override void DoRender()
@@ -23,6 +37,29 @@
         protected override void InstallShips()
         {
             Map.InstallRandomly();
+        }
+
+        private bool ValidateStep(string step, Challenger target)
+        {
+            if (!_stepPattern.IsMatch(step))
+            {
+                Logger.Write($"{GetType().Name}.ValidateStep: step '{step}' isn't match regex!");
+                return false;
+            }
+
+            var pair = ParseStep(step);
+
+            if (target.Map[pair.Item1, pair.Item2] == Map.Ceil.Empty
+                || target.Map[pair.Item1, pair.Item2] == Map.Ceil.Ship)
+            {
+                return true;
+            }
+
+            Logger.Write(
+                $"{GetType().Name}.ValidateStep: step '{step}' isn't valid"
+                + $", cuz target.Map[{pair.Item1}, {pair.Item2}] == {target.Map[pair.Item1, pair.Item2]}"
+            );
+            return false;
         }
     }
 }

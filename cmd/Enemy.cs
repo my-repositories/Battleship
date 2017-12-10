@@ -17,7 +17,7 @@
             }
         }
 
-        protected override string DoMove()
+        protected override string DoAttack(Challenger target)
         {
             // TODO: REMOVE THIS TEMP GENERATOR
             return _numerator.MoveNext() ? _numerator.Current : "A2";
@@ -46,7 +46,7 @@
             // TODO: REMOVE THIS TEMP NUMERATOR
             _numerator = TempStepGenerator().GetEnumerator();
             Map.InstallRandomly();
-            Logger.Write("Enemy install grid: " + Map);
+            Logger.Write($"{GetType().Name} install grid: {Map}");
         }
     }
 }

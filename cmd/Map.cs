@@ -30,8 +30,6 @@ namespace cmd
 
         public void HandleStep(int i, int j)
         {
-            Logger.Write(GetType().Name + $".HandleStep <{i}, {j}>");
-
             if (Grid[i, j] == Ceil.Empty)
             {
                 Grid[i, j] = Ceil.Miss;
