@@ -46,7 +46,7 @@
             // TODO: REMOVE THIS TEMP NUMERATOR
             _numerator = TempStepGenerator().GetEnumerator();
             Map.InstallRandomly();
-            Logger.Write($"{GetType().Name} install grid: {Map}");
+            Logger.Write(this, $"InstallShips: {Map}");
         }
     }
 }

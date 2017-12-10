@@ -43,7 +43,7 @@ namespace cmd
         {
             if (!_stepPattern.IsMatch(step))
             {
-                Logger.Write($"{GetType().Name}.ValidateStep: step '{step}' isn't match regex!");
+                Logger.Write(this, $"ValidateStep({step}): isn't match regex!");
                 return false;
             }
 
@@ -56,7 +56,8 @@ namespace cmd
             }
 
             Logger.Write(
-                $"{GetType().Name}.ValidateStep: step '{step}' isn't valid"
+                this,
+                $"ValidateStep({step}): isn't valid"
                 + $", cuz target.Map[{pair.Item1}, {pair.Item2}] == {target.Map[pair.Item1, pair.Item2]}"
             );
             return false;

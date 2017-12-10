@@ -6,6 +6,11 @@ namespace cmd
 {
     public class Logger
     {
+        public static void Write(Challenger challenger, string message)
+        {
+            Write(challenger.GetType().Name + message);
+        }
+
         public static void Write(string message)
         {
             var dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");

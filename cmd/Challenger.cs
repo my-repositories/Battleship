@@ -28,7 +28,7 @@ namespace cmd
         public Tuple<int, int> Attack(Challenger target)
         {
             var step = DoAttack(target);
-            Logger.Write(GetType().Name + ".Attack to: " + step);
+            Logger.Write(this, $"Shoot <{step}>");
 
             return ParseStep(step);
         }

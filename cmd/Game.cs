@@ -56,6 +56,9 @@ namespace cmd
                 Console.WriteLine("\r\nEnemy:");
                 _enemy.Render();
 
+                // TODO: refactoring ??
+                // _player.Shoot(_enemy);
+                // _enemy.Shoot(_player);
                 Shoot(initiator: _player, target: _enemy);
                 Shoot(initiator: _enemy, target: _player);
             }
@@ -65,7 +68,7 @@ namespace cmd
         {
             var step = initiator.Attack(target);
             target.HandleStep(step.Item1, step.Item2);
-            Logger.Write(target.GetType().Name + $".HandleStep <{step.Item1}, {step.Item2}>");
+            Logger.Write(target, $"HandleStep <{step.Item1}, {step.Item2}>");
         }
     }
 }
