@@ -3,18 +3,23 @@ using System.Linq;
 
 namespace cmd
 {
-    public class Challenger
+    public abstract class Challenger
     {
-        private readonly Map _map;
+        protected readonly Map Map;
 
-        public Challenger()
+        protected Challenger()
         {
-            _map = new Map();
+            Map = new Map();
         }
 
-        public void InstallShips()
+        public abstract void InstallShips();
+        protected abstract void DoMove();
+        protected abstract void DoRender();
+
+        public void Move()
         {
-            _map.InstallRandomly();
+            Logger.Write(GetType().Name + "::Move()");
+            DoMove();
         }
 
         public void Render()
@@ -25,15 +30,7 @@ namespace cmd
             var title = string.Join(" ", letters);
             Console.WriteLine($"    {title}");
 
-            for (var i = 0; i < Constants.MapSize; ++i)
-            {
-                Console.Write($"{1 + i} | ");
-                for (var j = 0; j < Constants.MapSize; ++j)
-                {
-                    Console.Write((char)_map[i, j] + " ");
-                }
-                Console.WriteLine("|");
-            }
+            DoRender();
         }
     }
 }

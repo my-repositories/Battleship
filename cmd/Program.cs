@@ -6,6 +6,8 @@
         {
             var game = new Game();
             game.Run();
+
+            System.Console.ReadLine();
         }
     }
 }
