@@ -2,14 +2,9 @@
 {
     public class Player : Challenger
     {
-        public override void InstallShips()
+        protected override string DoMove()
         {
-            Map.InstallRandomly();
-        }
-
-        protected override void DoMove()
-        {
-            System.Console.WriteLine("player :: move54645");
+            return System.Console.ReadLine()?.Trim().ToLower() ?? "A1";
         }
 
         protected override void DoRender()
@@ -23,6 +18,11 @@
                 }
                 System.Console.WriteLine("|");
             }
+        }
+
+        protected override void InstallShips()
+        {
+            Map.InstallRandomly();
         }
     }
 }

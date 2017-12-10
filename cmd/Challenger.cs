@@ -5,6 +5,7 @@ namespace cmd
 {
     public abstract class Challenger
     {
+        public int ShipsCount => Map.ShipsCount;
         protected readonly Map Map;
 
         protected Challenger()
@@ -12,14 +13,25 @@ namespace cmd
             Map = new Map();
         }
 
-        public abstract void InstallShips();
-        protected abstract void DoMove();
+        protected abstract string DoMove();
         protected abstract void DoRender();
+        protected abstract void InstallShips();
 
-        public void Move()
+        public void HandleStep(int i, int j) => Map.HandleStep(i, j);
+
+        public void Init()
         {
-            Logger.Write(GetType().Name + "::Move()");
-            DoMove();
+            Map.Reset();
+            InstallShips();
+        }
+
+        public Tuple<int, int> Move()
+        {
+            var step = DoMove();
+            Logger.Write(GetType().Name + ".Move to: " + step);
+
+            var pair = step.ToUpper().ToCharArray(0, 2);
+            return Tuple.Create(pair[1] - '1', pair[0] - 'A');
         }
 
         public void Render()

@@ -5,18 +5,20 @@ namespace cmd
     public class Map
     {
         public enum Ceil { Destroyed = 'X', Empty = ' ', Miss = '.', Ship = '@' };
+        public int ShipsCount { get; private set; }
         public Ceil[,] Grid { get; }
 
         public Map()
         {
             Grid = new Ceil[Constants.MapSize, Constants.MapSize];
-            Clear();
         }
 
         public Ceil this[int i, int j] => Grid[i, j];
 
-        public void Clear()
+        public void Reset()
         {
+            ShipsCount = Constants.ShipsCount;
+
             for (var i = 0; i < Constants.MapSize; ++i)
             {
                 for (var j = 0; j < Constants.MapSize; ++j)
@@ -26,6 +28,23 @@ namespace cmd
             }
         }
 
+        public void HandleStep(int i, int j)
+        {
+            Logger.Write(GetType().Name + $".HandleStep <{i}, {j}>");
+
+            if (Grid[i, j] == Ceil.Empty)
+            {
+                Grid[i, j] = Ceil.Miss;
+            }
+            else if (Grid[i, j] == Ceil.Ship)
+            {
+                Grid[i, j] = Ceil.Destroyed;
+                --ShipsCount;
+            }
+
+        }
+
+        // TODO: REMOVE IT AFTER RELEASE v.1
         public void InstallRandomly()
         {
             for (int counter = 0, x, y; counter < Constants.ShipsCount; )

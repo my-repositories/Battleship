@@ -6,7 +6,6 @@ namespace cmd
     {
         private readonly Challenger _enemy;
         private readonly Challenger _player;
-        private bool _gameIsEnded;
 
         public Game()
         {
@@ -16,16 +15,39 @@ namespace cmd
 
         public void Run()
         {
-            _gameIsEnded = false;
-            _enemy.InstallShips();
-            _player.InstallShips();
+            string answer;
+            do
+            {
+                _enemy.Init();
+                _player.Init();
 
-            MainLoop();
+                MainLoop();
+                Console.Write("Do you want play again ? y/n: ");
+                answer = Console.ReadLine()?.Trim().ToLower() ?? "y";
+
+            } while (answer != "n");
+        }
+
+        private bool GameOver()
+        {
+            if (_player.ShipsCount == 0)
+            {
+                Console.WriteLine(_enemy.ShipsCount == 0 ? "Draw" : "You loose!");
+                return true;
+            }
+
+            if (_enemy.ShipsCount == 0)
+            {
+                Console.WriteLine("You win!");
+                return true;
+            }
+
+            return false;
         }
 
         private void MainLoop()
         {
-            while (!_gameIsEnded)
+            while (!GameOver())
             {
                 Console.Clear();
 
@@ -34,11 +56,15 @@ namespace cmd
                 Console.WriteLine("\r\nEnemy:");
                 _enemy.Render();
 
-                _player.Move();
-                _enemy.Move();
-                // TODO: REMOVE IT
-                _gameIsEnded = true;
+                Shoot(initiator: _player, target: _enemy);
+                Shoot(initiator: _enemy, target: _player);
             }
+        }
+
+        private void Shoot(Challenger initiator, Challenger target)
+        {
+            var step = initiator.Move();
+            target.HandleStep(step.Item1, step.Item2);
         }
     }
 }

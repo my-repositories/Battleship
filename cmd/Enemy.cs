@@ -2,15 +2,25 @@
 {
     public class Enemy : Challenger
     {
-        public override void InstallShips()
+        // TODO: REMOVE THIS TEMP NUMERATOR
+        private System.Collections.Generic.IEnumerator<string> _numerator;
+
+        // TODO: REMOVE THIS TEMP GENERATOR
+        private System.Collections.Generic.IEnumerable<string> TempStepGenerator()
         {
-            Map.InstallRandomly();
-            Logger.Write("Enemy install grid: " + Map);
+            for (var i = 'A'; i <= 'H'; ++i)
+            {
+                for (var j = 1; j <= 8; ++j)
+                {
+                    yield return $"{i}{j}";
+                }
+            }
         }
 
-        protected override void DoMove()
+        protected override string DoMove()
         {
-            System.Console.WriteLine("enemy :: move12312");
+            // TODO: REMOVE THIS TEMP GENERATOR
+            return _numerator.MoveNext() ? _numerator.Current : "A2";
         }
 
         protected override void DoRender()
@@ -29,6 +39,14 @@
                 }
                 System.Console.WriteLine("|");
             }
+        }
+
+        protected override void InstallShips()
+        {
+            // TODO: REMOVE THIS TEMP NUMERATOR
+            _numerator = TempStepGenerator().GetEnumerator();
+            Map.InstallRandomly();
+            Logger.Write("Enemy install grid: " + Map);
         }
     }
 }
