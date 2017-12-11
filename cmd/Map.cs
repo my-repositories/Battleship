@@ -59,7 +59,6 @@ namespace cmd
         }
 
         // TODO: REMOVE IT AFTER RELEASE v.1
-#if DEBUG
         public override string ToString()
         {
             var letters = Enumerable.Range('A', Constants.MapSize)
@@ -79,25 +78,5 @@ namespace cmd
             }
             return result;
         }
-
-#else
-        public override string ToString()
-        {
-            var result = "[";
-
-            for (var i = 0; i < Constants.MapSize; ++i)
-            {
-                result += "[" + Grid[i, 0];
-                for (var j = 1; j < Constants.MapSize; ++j)
-                {
-                    result += "," + Grid[i, j];
-                }
-                result += "]";
-            }
-
-            result += "]";
-            return result;
-        }
-#endif
     }
 }

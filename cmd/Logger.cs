@@ -1,11 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Diagnostics;
 
 // TODO: REMOVE IT AFTER RELEASE v.1
 namespace cmd
 {
-    public class Logger
+    public static class Logger
     {
+        private static readonly string _logsDirectory = "./logs";
+        private static readonly string _logName;
+
+        static Logger()
+        {
+            _logName = $"{_logsDirectory}/{GetFormattedDate()}.txt";
+            Directory.CreateDirectory(_logsDirectory);
+        }
+
         public static void Write(Challenger challenger, string message)
         {
             Write(challenger.GetType().Name + message);
@@ -13,24 +23,18 @@ namespace cmd
 
         public static void Write(string message)
         {
-            var dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var dateTime = GetFormattedDate();
             var log = $"[{dateTime}] {message}";
 #if DEBUG
-            WriteToConsole(log);
+            Debug.WriteLine(log);
 #else
-            WriteToFile(log);
+            File.AppendAllText(_logName, log + Environment.NewLine);
 #endif
         }
-#if DEBUG
-        private static void WriteToConsole(string message)
+
+        private static string GetFormattedDate()
         {
-            Debug.WriteLine(message);
+            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         }
-#else
-        private static void WriteToFile(string message)
-        {
-            Console.WriteLine(message);
-        }
-#endif
     }
 }
