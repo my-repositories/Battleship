@@ -28,6 +28,16 @@ namespace cmd
             } while (answer != "n");
         }
 
+        private void Display()
+        {
+            Console.Clear();
+
+            Console.WriteLine("You:");
+            _player.Render();
+            Console.WriteLine("\r\nEnemy:");
+            _enemy.Render();
+        }
+
         private bool GameOver()
         {
             if (_player.ShipsCount == 0)
@@ -49,13 +59,6 @@ namespace cmd
         {
             while (!GameOver())
             {
-                Console.Clear();
-
-                Console.WriteLine("You:");
-                _player.Render();
-                Console.WriteLine("\r\nEnemy:");
-                _enemy.Render();
-
                 // TODO: refactoring ??
                 // _player.Shoot(_enemy);
                 // _enemy.Shoot(_player);
@@ -66,9 +69,14 @@ namespace cmd
 
         private void Shoot(Challenger initiator, Challenger target)
         {
-            var step = initiator.Attack(target);
-            target.HandleStep(step.Item1, step.Item2);
-            Logger.Write(target, $"HandleStep <{step.Item1}, {step.Item2}>");
+            bool hitting;
+            do
+            {
+                Display();
+                var step = initiator.Attack(target);
+                hitting = target.HandleStep(step.Item1, step.Item2);
+                Logger.Write(target, $"HandleStep <{step.Item1}, {step.Item2}>");
+            } while (hitting);
         }
     }
 }

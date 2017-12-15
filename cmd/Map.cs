@@ -4,7 +4,7 @@ namespace cmd
 {
     public class Map
     {
-        public enum Ceil { Destroyed = 'X', Empty = ' ', Miss = '.', Ship = '@' };
+        public enum Ceil { Destroyed = 'X', Empty = ' ', Injured = '-', Miss = '.', Ship = '@' };
         public int ShipsCount { get; private set; }
         public Ceil[,] Grid { get; }
 
@@ -32,18 +32,26 @@ namespace cmd
             }
         }
 
-        public void HandleStep(int i, int j)
+        public bool HandleStep(int i, int j)
         {
             if (Grid[i, j] == Ceil.Empty)
             {
                 Grid[i, j] = Ceil.Miss;
+                return false;
             }
-            else if (Grid[i, j] == Ceil.Ship)
+
+            if (Grid[i, j] == Ceil.Ship)
             {
-                Grid[i, j] = Ceil.Destroyed;
+                // TODO: добавить Ceil.Miss соседним клеткам по диагоналям
+                Grid[i, j] = Ceil.Injured;
                 --ShipsCount;
             }
 
+            // TODO: Добавить проверку - полностью ли корабль разрушен?
+            // Если да то заменить все Ceil.Injured на Ceil.Destroyed
+            // а так же заменить соседние Ceil.Empty на Ceil.Miss
+
+            return true;
         }
 
         // TODO: REMOVE IT AFTER RELEASE v.1

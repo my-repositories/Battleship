@@ -12,7 +12,7 @@ namespace cmd
         protected abstract string DoAttack(Challenger target);
         protected abstract void DoRender();
 
-        public void HandleStep(int i, int j) => Map.HandleStep(i, j);
+        public bool HandleStep(int i, int j) => Map.HandleStep(i, j);
 
         public void Init()
         {
