@@ -34,11 +34,6 @@ namespace cmd
             }
         }
 
-        protected override void InstallShips()
-        {
-            Map.InstallRandomly();
-        }
-
         private bool ValidateStep(string step, Challenger target)
         {
             if (!_stepPattern.IsMatch(step))

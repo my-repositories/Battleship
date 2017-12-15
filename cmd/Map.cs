@@ -13,7 +13,11 @@ namespace cmd
             Grid = new Ceil[Constants.MapSize, Constants.MapSize];
         }
 
-        public Ceil this[int i, int j] => Grid[i, j];
+        public Ceil this[int i, int j]
+        {
+            get { return Grid[i, j]; }
+            set { Grid[i, j] = value; }
+        }
 
         public void Reset()
         {
@@ -40,22 +44,6 @@ namespace cmd
                 --ShipsCount;
             }
 
-        }
-
-        // TODO: REMOVE IT AFTER RELEASE v.1
-        public void InstallRandomly()
-        {
-            for (int counter = 0, x, y; counter < Constants.ShipsCount; )
-            {
-                x = Constants.RandomGenerator.Next(0, Constants.MapSize);
-                y = Constants.RandomGenerator.Next(0, Constants.MapSize);
-
-                if (Grid[x, y] == Ceil.Empty)
-                {
-                    Grid[x, y] = Ceil.Ship;
-                    ++counter;
-                }
-            }
         }
 
         // TODO: REMOVE IT AFTER RELEASE v.1

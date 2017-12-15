@@ -6,23 +6,97 @@ namespace cmd
     public abstract class Challenger
     {
         public int ShipsCount => Map.ShipsCount;
-        protected internal readonly Map Map;
-
-        protected Challenger()
-        {
-            Map = new Map();
-        }
+        protected enum Direction { Up, Right, Down, Left };
+        protected internal readonly Map Map = new Map();
 
         protected abstract string DoAttack(Challenger target);
         protected abstract void DoRender();
-        protected abstract void InstallShips();
 
         public void HandleStep(int i, int j) => Map.HandleStep(i, j);
 
         public void Init()
         {
             Map.Reset();
-            InstallShips();
+            foreach (var option in Constants.ShipsSettings)
+            {
+                InstallShips(size: option.Key, count: option.Value);
+            }
+            Logger.Write(this, $"InstallShips: {Map}");
+        }
+
+        protected bool CanInstallShip(Direction direction, int size, int x, int y)
+        {
+            for (var i = 0; i < size; ++i)
+            {
+                // проверка на выход за пределы карты
+                if (x < 0 || y < 0 || x >= Constants.MapSize || y >= Constants.MapSize)
+                {
+                    return false;
+                }
+
+                // проверка на соприкосновение с другими палубами
+                if (
+                    Map[x, y] == Map.Ceil.Ship
+                    || (Constants.MapSize > y + 1 && Map[x, y + 1] == Map.Ceil.Ship)
+                    || (y > 0 && Map[x, y - 1] == Map.Ceil.Ship)
+                    || (Constants.MapSize > x + 1 && Map[x + 1, y] == Map.Ceil.Ship)
+                    || (Constants.MapSize > x + 1 && Constants.MapSize > y + 1 && Map[x + 1, y + 1] == Map.Ceil.Ship)
+                    || (Constants.MapSize > x + 1 && y > 0 && Map[x + 1, y - 1] == Map.Ceil.Ship)
+                    || (x > 0 && Map[x - 1, y] == Map.Ceil.Ship)
+                    || (x > 0 && Constants.MapSize > y + 1 && Map[x - 1, y + 1] == Map.Ceil.Ship)
+                    || (x > 0 && y > 0 && Map[x - 1, y - 1] == Map.Ceil.Ship)
+                    )
+                {
+                    return false;
+                }
+
+                ChangeOffsetByDirection(direction, ref x, ref y);
+            }
+            return true;
+        }
+
+        protected void ChangeOffsetByDirection(Direction direction, ref int x, ref int y)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    --y;
+                    break;
+                case Direction.Right:
+                    ++x;
+                    break;
+                case Direction.Down:
+                    ++y;
+                    break;
+                case Direction.Left:
+                    --x;
+                    break;
+            }
+        }
+
+        protected void InstallShip(Direction direction, int size, int x, int y)
+        {
+            for (var i = 0; i < size; ++i)
+            {
+                Map[x, y] = Map.Ceil.Ship;
+                ChangeOffsetByDirection(direction, ref x, ref y);
+            }
+        }
+
+        protected virtual void InstallShips(int count, int size)
+        {
+            for (int counter = 0, x, y; counter < count;)
+            {
+                x = Constants.RandomGenerator.Next(0, Constants.MapSize);
+                y = Constants.RandomGenerator.Next(0, Constants.MapSize);
+                var direction = (Direction)Constants.RandomGenerator.Next(0, 3);
+
+                if (CanInstallShip(direction, size, x, y))
+                {
+                    InstallShip(direction, size, x, y);
+                    ++counter;
+                }
+            }
         }
 
         public Tuple<int, int> Attack(Challenger target)

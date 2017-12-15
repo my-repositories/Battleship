@@ -2,25 +2,11 @@
 {
     public class Enemy : Challenger
     {
-        // TODO: REMOVE THIS TEMP NUMERATOR
-        private System.Collections.Generic.IEnumerator<string> _numerator;
-
-        // TODO: REMOVE THIS TEMP GENERATOR
-        private System.Collections.Generic.IEnumerable<string> TempStepGenerator()
-        {
-            for (var i = 'A'; i <= 'H'; ++i)
-            {
-                for (var j = 1; j <= 8; ++j)
-                {
-                    yield return $"{i}{j}";
-                }
-            }
-        }
+        protected int Xi = 1;
 
         protected override string DoAttack(Challenger target)
         {
-            // TODO: REMOVE THIS TEMP GENERATOR
-            return _numerator.MoveNext() ? _numerator.Current : "A2";
+            return $"A{Xi++}";
         }
 
         protected override void DoRender()
@@ -39,14 +25,6 @@
                 }
                 System.Console.WriteLine("|");
             }
-        }
-
-        protected override void InstallShips()
-        {
-            // TODO: REMOVE THIS TEMP NUMERATOR
-            _numerator = TempStepGenerator().GetEnumerator();
-            Map.InstallRandomly();
-            Logger.Write(this, $"InstallShips: {Map}");
         }
     }
 }
