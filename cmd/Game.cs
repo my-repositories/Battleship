@@ -4,6 +4,7 @@ namespace cmd
 {
     public class Game
     {
+        private enum State { Draw, Loose, Win, NextStep }
         private readonly Challenger _enemy;
         private readonly Challenger _player;
 
@@ -38,26 +39,25 @@ namespace cmd
             _enemy.Render();
         }
 
-        private bool GameOver()
+        private State GetGameState()
         {
             if (_player.ShipsCount == 0)
             {
-                Console.WriteLine(_enemy.ShipsCount == 0 ? "Draw" : "You loose!");
-                return true;
+                return _enemy.ShipsCount == 0 ? State.Draw : State.Loose;
             }
 
             if (_enemy.ShipsCount == 0)
             {
-                Console.WriteLine("You win!");
-                return true;
+                return State.Win;
             }
 
-            return false;
+            return State.NextStep;
         }
 
         private void MainLoop()
         {
-            while (!GameOver())
+            State gameState;
+            while ((gameState = GetGameState()) == State.NextStep)
             {
                 // TODO: refactoring ??
                 // _player.Shoot(_enemy);
@@ -65,6 +65,8 @@ namespace cmd
                 Shoot(initiator: _player, target: _enemy);
                 Shoot(initiator: _enemy, target: _player);
             }
+            Display();
+            Console.WriteLine(gameState);
         }
 
         private void Shoot(Challenger initiator, Challenger target)
@@ -76,7 +78,7 @@ namespace cmd
                 var step = initiator.Attack(target);
                 hitting = target.HandleStep(step.Item1, step.Item2);
                 Logger.Write(target, $"HandleStep <{step.Item1}, {step.Item2}>");
-            } while (hitting);
+            } while (hitting && GetGameState() == State.NextStep);
         }
     }
 }

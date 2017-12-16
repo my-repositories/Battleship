@@ -3,8 +3,6 @@ using System.Linq;
 
 namespace cmd
 {
-    public enum Direction { Up, Right, Down, Left };
-
     public class Map
     {
         public enum Ceil { Destroyed = 'X', Empty = ' ', Injured = '-', Miss = '.', Ship = '@' };
@@ -108,7 +106,7 @@ namespace cmd
             return null;
         }
 
-        private bool? CheckNeighborsByDirection(Direction direction, int x, int y, bool condition = false)
+        private bool? CheckNeighborsByDirection(Direction direction, int x, int y)
         {
             while (
                 0 <= x && x < Constants.MapSize
@@ -121,26 +119,12 @@ namespace cmd
                     return false;
                 }
 
-                if (condition && Grid[x, y] != Ceil.Injured)
+                if (Grid[x, y] != Ceil.Injured)
                 {
                     return true;
                 }
 
-                switch (direction)
-                {
-                    case Direction.Up:
-                        --x;
-                        break;
-                    case Direction.Right:
-                        ++y;
-                        break;
-                    case Direction.Down:
-                        ++x;
-                        break;
-                    case Direction.Left:
-                        --y;
-                        break;
-                }
+                direction.Move(ref y, ref x);
             }
 
             return null;
@@ -158,50 +142,19 @@ namespace cmd
             var pair = CheckNearestCell(Ceil.Injured, x, y);
             if (null != pair)
             {
-                Direction direction;
                 var i = pair.Item1;
                 var j = pair.Item2;
-
-                if (x > i)
-                {
-                    direction = Direction.Up;
-                } else if (y > j)
-                {
-                    direction = Direction.Left;
-                }
-                else if (y < j)
-                {
-                    direction = Direction.Right;
-                }
-                else
-                {
-                    direction = Direction.Down;
-                }
+                var direction = DirectionMethods.GetDirectionByPoints(x, y, i, j);
 
                 var result = CheckNeighborsByDirection(direction, x, y);
-                if (result.HasValue)
+                if (null != result)
                 {
                     return (bool) result;
                 }
 
-                if (direction == Direction.Up)
-                {
-                    direction = Direction.Down;
-                }
-                else if (direction == Direction.Down)
-                {
-                    direction = Direction.Up;
-                }
-                else if (direction == Direction.Left)
-                {
-                    direction = Direction.Right;
-                }
-                else
-                {
-                    direction = Direction.Left;
-                }
+                direction = direction.Invert();
 
-                result = CheckNeighborsByDirection(direction, x, y, true);
+                result = CheckNeighborsByDirection(direction, x, y);
                 if (null != result)
                 {
                     return (bool) result;

@@ -23,6 +23,25 @@ namespace cmd
             Logger.Write(this, $"InstallShips: {Map}");
         }
 
+        public Tuple<int, int> Attack(Challenger target)
+        {
+            var step = DoAttack(target);
+            Logger.Write(this, $"Shoot <{step}>");
+
+            return ParseStep(step);
+        }
+
+        public void Render()
+        {
+            var letters = Enumerable.Range('A', Constants.MapSize)
+                .Select(x => (char)x)
+                .ToArray();
+            var title = string.Join(" ", letters);
+            Console.WriteLine($"    {title}");
+
+            DoRender();
+        }
+
         protected bool CanInstallShip(Direction direction, int size, int x, int y)
         {
             for (var i = 0; i < size; ++i)
@@ -49,28 +68,9 @@ namespace cmd
                     return false;
                 }
 
-                ChangeOffsetByDirection(direction, ref x, ref y);
+                direction.Move(ref x, ref y);
             }
             return true;
-        }
-
-        protected void ChangeOffsetByDirection(Direction direction, ref int x, ref int y)
-        {
-            switch (direction)
-            {
-                case Direction.Up:
-                    --y;
-                    break;
-                case Direction.Right:
-                    ++x;
-                    break;
-                case Direction.Down:
-                    ++y;
-                    break;
-                case Direction.Left:
-                    --x;
-                    break;
-            }
         }
 
         protected void InstallShip(Direction direction, int size, int x, int y)
@@ -78,7 +78,7 @@ namespace cmd
             for (var i = 0; i < size; ++i)
             {
                 Map[x, y] = Map.Ceil.Ship;
-                ChangeOffsetByDirection(direction, ref x, ref y);
+                direction.Move(ref x, ref y);
             }
         }
 
@@ -88,7 +88,7 @@ namespace cmd
             {
                 x = Constants.RandomGenerator.Next(0, Constants.MapSize);
                 y = Constants.RandomGenerator.Next(0, Constants.MapSize);
-                var direction = (Direction)Constants.RandomGenerator.Next(0, 3);
+                var direction = DirectionMethods.GetRandomDirection();
 
                 if (CanInstallShip(direction, size, x, y))
                 {
@@ -96,25 +96,6 @@ namespace cmd
                     ++counter;
                 }
             }
-        }
-
-        public Tuple<int, int> Attack(Challenger target)
-        {
-            var step = DoAttack(target);
-            Logger.Write(this, $"Shoot <{step}>");
-
-            return ParseStep(step);
-        }
-
-        public void Render()
-        {
-            var letters = Enumerable.Range('A', Constants.MapSize)
-                .Select(x => (char)x)
-                .ToArray();
-            var title = string.Join(" ", letters);
-            Console.WriteLine($"    {title}");
-
-            DoRender();
         }
 
         protected Tuple<int, int> ParseStep(string step)

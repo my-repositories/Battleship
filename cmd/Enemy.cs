@@ -2,11 +2,20 @@
 {
     public class Enemy : Challenger
     {
-        protected int Xi = 1;
-
         protected override string DoAttack(Challenger target)
         {
-            return $"A{Xi++}";
+            do
+            {
+                var ch = (char) Constants.RandomGenerator.Next('A', 'A' + Constants.MapSize);
+                var step = $"{ch}{Constants.RandomGenerator.Next(1, 1 + Constants.MapSize)}";
+
+                var pair = ParseStep(step);
+                if (target.Map[pair.Item1, pair.Item2] == Map.Ceil.Empty
+                    || target.Map[pair.Item1, pair.Item2] == Map.Ceil.Ship)
+                {
+                    return step;
+                }
+            } while (true);
         }
 
         protected override void DoRender()

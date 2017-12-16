@@ -32,6 +32,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Direction.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Player.cs" />
