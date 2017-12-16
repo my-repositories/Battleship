@@ -42,7 +42,7 @@ namespace cmd
 
             if (Grid[i, j] == Ceil.Ship)
             {
-                // TODO: добавить Ceil.Miss соседним клеткам по диагоналям
+                MarkDiagonalsAsMiss(i, j);
                 Grid[i, j] = Ceil.Injured;
                 --ShipsCount;
             }
@@ -73,6 +73,33 @@ namespace cmd
                 result += " |";
             }
             return result;
+        }
+
+        private void MarkDiagonalsAsMiss(int i, int j)
+        {
+            // заполнение соседней клетки сверху-слева
+            if (i > 0 && j > 0)
+            {
+                Grid[i - 1, j - 1] = Ceil.Miss;
+            }
+
+            // заполнение соседней клетки снизу-справа
+            if (i < Constants.MapSize - 1 && j < Constants.MapSize - 1)
+            {
+                Grid[i + 1, j + 1] = Ceil.Miss;
+            }
+
+            // заполнение соседней клетки снизу-слева
+            if (i < Constants.MapSize - 1 && j > 0)
+            {
+                Grid[i + 1, j - 1] = Ceil.Miss;
+            }
+
+            // заполнение соседней клетки сверху-справа
+            if (i > 0 && j < Constants.MapSize - 1)
+            {
+                Grid[i - 1, j + 1] = Ceil.Miss;
+            }
         }
     }
 }
