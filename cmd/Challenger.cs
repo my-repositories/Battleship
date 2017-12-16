@@ -6,13 +6,12 @@ namespace cmd
     public abstract class Challenger
     {
         public int ShipsCount => Map.ShipsCount;
-        protected enum Direction { Up, Right, Down, Left };
         protected internal readonly Map Map = new Map();
 
         protected abstract string DoAttack(Challenger target);
         protected abstract void DoRender();
 
-        public bool HandleStep(int i, int j) => Map.HandleStep(i, j);
+        public bool HandleStep(int x, int y) => Map.HandleStep(x, y);
 
         public void Init()
         {
